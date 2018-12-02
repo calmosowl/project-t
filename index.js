@@ -1,3 +1,13 @@
+const input = [
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+  [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+];
+
 function getObservables(domItem) {
   const mouseEventToCoordinate = mouseEvent => {
     mouseEvent.preventDefault();
@@ -9,24 +19,53 @@ function getObservables(domItem) {
   
   const mouseDowns = Rx.Observable.fromEvent(domItem, "mousedown").map(mouseEventToCoordinate);
   const mouseUps = Rx.Observable.fromEvent(domItem, "mouseup").map(mouseEventToCoordinate);
-  
+
   return { mouseDowns, mouseUps };
 }
 
 const domItem = document.getElementById('wrapper');
-const observables = getObservables(domItem);
+const outButton = document.getElementById('output');
 
-// const xDowns, yDowns, xUps, yUps;
+const xItemWidth = domItem.offsetWidth / 24;
+const yItemHeight = domItem.offsetHeight / 7;
+
+const observables = getObservables(domItem);
+const coordinateStamp = {
+  xd: 0,
+  yd: 0,
+  xu: 0,
+  yu: 0
+}
+
+outButton.onclick = (e) => {
+  e.preventDefault();
+  output(coordinateStamp.xd, coordinateStamp.yd, coordinateStamp.xu, coordinateStamp.yu);
+  console.log(input);
+}
+
+const valueTransfer = ([x, y]) => {
+  return [Math.trunc(x / xItemWidth), Math.trunc(y / yItemHeight)];
+}
+
+const output = (xd, yd, xu, yu) => {
+  [xd, yd] = valueTransfer([xd, yd]);
+  [xu, yu] = valueTransfer([xu, yu]);
+
+  for(i = Math.min(yd, yu); i <= Math.max(yd, yu); i++) {
+    for(j = Math.min(xd, xu); j <= Math.max(xd, xu); j++) {
+      input[i][j] = true;
+    }
+  }
+  console.log(input);
+  return input;
+}
 
 observables.mouseDowns.subscribe(coordinate => {
-  // xDowns = coordinate.x;
-  // yDowns = coordinate.y;
   console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
+  return [coordinateStamp.xd, coordinateStamp.yd] = [coordinate.x, coordinate.y];
 });
 
 observables.mouseUps.subscribe(coordinate => {
-  // xUps = coordinate.x;
-  // yUps = coordinate.y;
   console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
-  // console.log(xDowns, yDowns, xUps, yUps)
+  return [coordinateStamp.xu, coordinateStamp.yu] = [coordinate.x, coordinate.y];
 });
