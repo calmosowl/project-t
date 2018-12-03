@@ -30,6 +30,7 @@ const xItemWidth = domItem.offsetWidth / 24;
 const yItemHeight = domItem.offsetHeight / 7;
 
 const observables = getObservables(domItem);
+
 const coordinateStamp = {
   xd: 0,
   yd: 0,
@@ -60,12 +61,20 @@ const output = (xd, yd, xu, yu) => {
   return input;
 }
 
-observables.mouseDowns.subscribe(coordinate => {
-  console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
-  return [coordinateStamp.xd, coordinateStamp.yd] = [coordinate.x, coordinate.y];
-});
+Rx.Observable.combineLatest(observables.mouseDowns, observables.mouseUps)
+  .map((coords) => console.log(coords))
+  .subscribe();
 
-observables.mouseUps.subscribe(coordinate => {
-  console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
-  return [coordinateStamp.xu, coordinateStamp.yu] = [coordinate.x, coordinate.y];
-});
+// observables.mouseDowns.subscribe(coordinate => {
+//   console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
+//   return [coordinateStamp.xd, coordinateStamp.yd] = [coordinate.x, coordinate.y];
+// });
+
+// observables.mouseUps.pipe(
+//   map(coordinate => [coordinateStamp.xu, coordinateStamp.yu] = [coordinate.x, coordinate.y]),
+//   tap((coordinateStamp) => output((coordinateStamp.xd, coordinateStamp.yd, coordinateStamp.xu, coordinateStamp.yu))
+  
+// )
+// .subscribe(coordinate => {
+//   console.log(`x: ${coordinate.x} y: ${coordinate.y}`)
+// });
