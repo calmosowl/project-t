@@ -1,5 +1,5 @@
 import { Observable, combineLatest, fromEvent } from 'rxjs';
-import { tap, catchError, filter, switchMapTo, pluck, map, finalize, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 const input = [
   [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
@@ -49,44 +49,21 @@ const output = (xd: any, yd: any, xu: any, yu: any) => {
   [xd, yd] = valueTransfer([xd, yd]);
   [xu, yu] = valueTransfer([xu, yu]);
 
-  console.log(`Begin at: ${xd}, ${yd} ::: End at: ${xu}, ${yu}`);
-
   for(let i = Math.min(yd, yu); i <= Math.max(yd, yu); i++) {
     for(let j = Math.min(xd, xu); j <= Math.max(xd, xu); j++) {
       input[i][j] = true;
     }
   }
-  // console.log(input);
+  console.log(input);
   return input;
 }
 
-combineLatest(observables.mouseDowns, observables.mouseUps)
-  .pipe(
-    map((coords: any) => console.log(coords))
-  // .map((coords) => output(coords[0].x, coords[0].y, coords[1].x, coords[1].y))
-  ).subscribe();
+const combined = combineLatest(observables.mouseDowns, observables.mouseUps);
 
-
-  function logItem(val:any) {
-      var node = document.createElement("li");
-      var textnode = document.createTextNode(val);
-      node.appendChild(textnode);
-      document.getElementById("list").appendChild(node);
+const subscribe = combined.subscribe(
+  ([down, up]) => {
+    console.log(`::: Begin at: ${valueTransfer([down.x, down.y])},
+    ::: End at: ${valueTransfer([up.x, up.y])}`
+                 );
   }
-
-
-
-
-// var observable = Observable.create((observer:any) => {
-//     observer.next('Hello World!');
-//     observer.next('Hello Again!');
-//     observer.complete();
-//     observer.next('Bye');
-// })
-
-// observable.subscribe(
-//     (x:any) => logItem(x),
-//     (error: any) => logItem ('Error: ' + error),
-//     () => logItem('Completed')
-// );
-
+);
