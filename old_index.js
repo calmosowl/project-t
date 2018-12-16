@@ -31,18 +31,18 @@ const yItemHeight = domItem.offsetHeight / 7;
 
 const observables = getObservables(domItem);
 
-const coordinateStamp = {
-  xd: 0,
-  yd: 0,
-  xu: 0,
-  yu: 0
-}
+// const coordinateStamp = {
+//   xd: 0,
+//   yd: 0,
+//   xu: 0,
+//   yu: 0
+// }
 
-outButton.onclick = (e) => {
-  e.preventDefault();
-  output(coordinateStamp.xd, coordinateStamp.yd, coordinateStamp.xu, coordinateStamp.yu);
-  console.log(input);
-}
+// outButton.onclick = (e) => {
+//   e.preventDefault();
+//   output(coordinateStamp.xd, coordinateStamp.yd, coordinateStamp.xu, coordinateStamp.yu);
+//   console.log(input);
+// }
 
 const valueTransfer = ([x, y]) => {
   return [Math.trunc(x / xItemWidth), Math.trunc(y / yItemHeight)];
@@ -51,7 +51,7 @@ const valueTransfer = ([x, y]) => {
 const output = (xd, yd, xu, yu) => {
   [xd, yd] = valueTransfer([xd, yd]);
   [xu, yu] = valueTransfer([xu, yu]);
-
+  console.log(`Begin at: ${xd, yd} ::: End at: ${xu, yu}`);
   for(i = Math.min(yd, yu); i <= Math.max(yd, yu); i++) {
     for(j = Math.min(xd, xu); j <= Math.max(xd, xu); j++) {
       input[i][j] = true;
@@ -63,6 +63,7 @@ const output = (xd, yd, xu, yu) => {
 
 Rx.Observable.combineLatest(observables.mouseDowns, observables.mouseUps)
   .map((coords) => console.log(coords))
+  // .map((coords) => output(coords[0].x, coords[0].y, coords[1].x, coords[1].y))
   .subscribe();
 
 // observables.mouseDowns.subscribe(coordinate => {

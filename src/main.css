@@ -11,8 +11,8 @@ body {
   grid-row-gap: 8px;
   box-shadow: 0 0 22px rgba(0,0,0,0.12);
   background-color: #f7f7f7;
-  background-image: linear-gradient(90deg,#37373724 0,#0000 1px),
-    linear-gradient(180deg,#37373724 0,#0000 1px);
+  background-image: linear-gradient(90deg, darkgray 0,#0000 1px),
+    linear-gradient(180deg, darkgray 0,#0000 1px);
   background-size: var(--cell-width) var(--cell-height);
 }
 
