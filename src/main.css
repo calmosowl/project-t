@@ -3,17 +3,33 @@ body {
 }
 
 .wrapper {
-  --cell-width: calc(100% / 24);
-  --cell-height: calc(100% / 7);
+  --cell-size: 2rem;
 
+  width: calc(var(--cell-size) * 24);
+  height: calc(var(--cell-size) * 7);
   display: grid;
-  grid-template-rows: repeat(7, 42px);
-  grid-row-gap: 8px;
+  grid-template-rows: repeat(7, var(--cell-size));
+  grid-template-columns: repeat(24, var(--cell-size));
   box-shadow: 0 0 22px rgba(0,0,0,0.12);
   background-color: #f7f7f7;
-  background-image: linear-gradient(90deg, darkgray 0,#0000 1px),
-    linear-gradient(180deg, darkgray 0,#0000 1px);
-  background-size: var(--cell-width) var(--cell-height);
+  background-image: linear-gradient(90deg,#37373724 0,#0000 1px),linear-gradient(180deg,#37373724 0,#0000 1px);
+  background-size: var(--cell-size) var(--cell-size);
+}
+
+.wrapper div {
+  font-family: monospace;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  height: var(--cell-size);
+  width: var(--cell-size);
+  box-shadow: 0 0 22px rgba(0,0,0,0.12);
+  background-color: #af9300;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button {

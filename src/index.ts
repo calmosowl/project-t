@@ -20,17 +20,8 @@ function getObservables(domItem: any) {
     };
   };
   
-  const mouseDowns = fromEvent(domItem, "mousedown")
-    .pipe(map(mouseEventToCoordinate));
-
-  const mouseUps = fromEvent(domItem, "mouseup")
-    .pipe(map(mouseEventToCoordinate));
-  // const mouseDowns =  Observable.create((observer:any) => {
-  //   observer.fromEvent(domItem, "mousedown").map(mouseEventToCoordinate);
-  // });
-  // const mouseUps = Observable.create((observer:any) => {
-  //   observer.fromEvent(domItem, "mousedown").map(mouseEventToCoordinate);
-  // });
+  const mouseDowns = fromEvent(domItem, "mousedown").pipe(map(mouseEventToCoordinate));
+  const mouseUps = fromEvent(domItem, "mouseup").pipe(map(mouseEventToCoordinate));
 
   return { mouseDowns, mouseUps };
 }
@@ -52,18 +43,35 @@ const output = (xd: any, yd: any, xu: any, yu: any) => {
   for(let i = Math.min(yd, yu); i <= Math.max(yd, yu); i++) {
     for(let j = Math.min(xd, xu); j <= Math.max(xd, xu); j++) {
       input[i][j] = true;
+      createElement(i, j);
     }
   }
   console.log(input);
   return input;
 }
 
-const combined = combineLatest(observables.mouseDowns, observables.mouseUps);
+const coordinateStamp = {
+  xd: 0,
+  yd: 0,
+  xu: 0,
+  yu: 0
+}
 
-const subscribe = combined.subscribe(
-  ([down, up]) => {
-    console.log(`::: Begin at: ${valueTransfer([down.x, down.y])},
-    ::: End at: ${valueTransfer([up.x, up.y])}`
-                 );
-  }
-);
+observables.mouseDowns.subscribe(coordinate => {
+  console.log(`::: Begin at: ${valueTransfer([coordinate.x, coordinate.y])}`)
+  return [coordinateStamp.xd, coordinateStamp.yd] = [coordinate.x, coordinate.y];
+});
+
+observables.mouseUps.subscribe(coordinate => {
+  console.log(`::: End at: ${valueTransfer([coordinate.x, coordinate.y])}`);
+  [coordinateStamp.xu, coordinateStamp.yu] = [coordinate.x, coordinate.y];
+
+  output(coordinateStamp.xd, coordinateStamp.yd, coordinateStamp.xu, coordinateStamp.yu);
+});
+
+function createElement(y: any, x: any){
+  const item = document.createElement('div');
+  item.setAttribute('style', `grid-row: ${y + 1}; grid-column: ${x + 1}`);
+  item.textContent=`${x + 1}`;
+  domItem.appendChild(item);
+}
